@@ -1,14 +1,17 @@
 package jimmy.tap.bottomsheetexample
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.transition.Transition
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import company.tap.tapuilibrary.TapBottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.sample_bottom_sheet.*
 
 /**
@@ -17,9 +20,11 @@ import kotlinx.android.synthetic.main.sample_bottom_sheet.*
  * Copyright © 2020 Tap Payments. All rights reserved.
  *
  */
-class SampleBottomSheetFragment : TapBottomSheetDialog() {
+class SampleBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var isFragmentAdded = false
+    private var bottomSheetLayout: FrameLayout? = null
+    private lateinit var bottomSheetDialog: BottomSheetDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,10 +32,18 @@ class SampleBottomSheetFragment : TapBottomSheetDialog() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.sample_bottom_sheet, container, false)
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.setOnShowListener {
+            bottomSheetLayout =
+                bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+        }
+        return bottomSheetDialog
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetDialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetDialog.behavior.skipCollapsed = true
         initFragmentTransition()
     }
 
